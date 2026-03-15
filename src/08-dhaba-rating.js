@@ -45,17 +45,39 @@
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
 export function createFilter(field, operator, value) {
-  // Your code here
+  return (obj) => {
+    const v = obj[field];
+
+    switch (operator) {
+      case ">": return v > value;
+      case "<": return v < value;
+      case ">=": return v >= value;
+      case "<=": return v <= value;
+      case "===": return v === value;
+      default: return false;
+    }
+  };
 }
 
 export function createSorter(field, order = "asc") {
-  // Your code here
+  return (a, b) => {
+    if (a[field] < b[field]) return order === "asc" ? -1 : 1;
+    if (a[field] > b[field]) return order === "asc" ? 1 : -1;
+    return 0;
+  };
 }
 
 export function createMapper(fields) {
-  // Your code here
+  return (obj) => {
+    const result = {};
+    for (const f of fields) {
+      if (f in obj) result[f] = obj[f];
+    }
+    return result;
+  };
 }
 
 export function applyOperations(data, ...operations) {
-  // Your code here
+  if (!Array.isArray(data)) return [];
+  return operations.reduce((result, op) => op(result), data);
 }
